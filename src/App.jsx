@@ -1,28 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
+import Hero from './components/Hero';
+import NavCards from './components/NavCards';
+import StandardsView from './components/StandardsView';
+import Footer from './components/Footer';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selected, setSelected] = useState('cereals');
+  const [dark, setDark] = useState(false);
+  const exploreRef = useRef(null);
+
+  useEffect(() => {
+    if (dark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
+    }
+  }, [dark]);
+
+  const handleExplore = () => {
+    exploreRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-amber-50 to-stone-50 text-stone-900 dark:from-stone-950 dark:via-stone-900 dark:to-stone-900 dark:text-stone-100">
+      <Hero onExploreClick={handleExplore} dark={dark} setDark={setDark} />
+
+      <div ref={exploreRef}>
+        <NavCards onSelect={(key) => setSelected(key)} />
+        <StandardsView selectedKey={selected} />
       </div>
+
+      <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
